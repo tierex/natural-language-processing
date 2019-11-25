@@ -30,6 +30,7 @@ def text_prepare(text):
 
     return text.strip()
 
+import csv
 
 def load_embeddings(embeddings_path):
     """Loads pre-trained word embeddings from tsv file.
@@ -49,12 +50,25 @@ def load_embeddings(embeddings_path):
     ########################
     #### YOUR CODE HERE ####
     ########################
+    
+    embeddings = {}
+    embeddings_dim = 100
+    
+    
+    with open('data/word_embeddings.tsv') as tsvfile:
+        reader = csv.reader(tsvfile, delimiter='\t')
+        for row in reader:
+            word = row[0]
+            embed_vector = row[1:]
+            embeddings[word] = np.array(embed_vector, dtype=np.float32)
+    
+    return embeddings, embeddings_dim
 
     # remove this when you're done
-    raise NotImplementedError(
-        "Open utils.py and fill with your code. In case of Google Colab, download"
-        "(https://github.com/hse-aml/natural-language-processing/blob/master/project/utils.py), "
-        "edit locally and upload using '> arrow on the left edge' -> Files -> UPLOAD")
+#     raise NotImplementedError(
+#         "Open utils.py and fill with your code. In case of Google Colab, download"
+#         "(https://github.com/hse-aml/natural-language-processing/blob/master/project/utils.py), "
+#         "edit locally and upload using '> arrow on the left edge' -> Files -> UPLOAD")
 
 
 def question_to_vec(question, embeddings, dim):
@@ -67,10 +81,15 @@ def question_to_vec(question, embeddings, dim):
     ########################
 
     # remove this when you're done
-    raise NotImplementedError(
-        "Open utils.py and fill with your code. In case of Google Colab, download"
-        "(https://github.com/hse-aml/natural-language-processing/blob/master/project/utils.py), "
-        "edit locally and upload using '> arrow on the left edge' -> Files -> UPLOAD")
+    vec = np.zeros((dim,), dtype=np.float32)
+    count = 0
+    for w in question.split():
+        if w in embeddings:
+            count += 1
+            vec += embeddings[w]
+    if count == 0:
+        return vec
+    return vec/count
 
 
 def unpickle_file(filename):

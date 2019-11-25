@@ -7,6 +7,8 @@ import os
 import json
 
 from requests.compat import urljoin
+from dialogue_manager import DialogueManager
+
 
 
 class BotHandler(object):
@@ -84,8 +86,15 @@ def main():
     # This is the point where you plug it into the Telegram bot. 
     # Do not forget to import all needed dependencies when you do so.
     
-    simple_manager = SimpleDialogueManager()
-    bot = BotHandler(token, simple_manager)
+#     simple_manager = SimpleDialogueManager()
+    paths = {}
+    paths['INTENT_RECOGNIZER'] = '/home/ubuntu/code/nlp_yandex/project/data/intent_recognizer.pkl'
+    paths['TFIDF_VECTORIZER'] = '/home/ubuntu/code/nlp_yandex/project/data/tfidf_vectorizer.pkl'
+    paths['TAG_CLASSIFIER'] = '/home/ubuntu/code/nlp_yandex/project/data/tag_classifier.pkl'
+    paths['WORD_EMBEDDINGS'] = '/home/ubuntu/code/nlp_yandex/project/data/word_embeddings.tsv'
+    paths['THREAD_EMBEDDINGS_FOLDER'] = '/home/ubuntu/code/nlp_yandex/project/data/thread_embeddings_by_tags'
+    dialog_manager = DialogueManager(paths)
+    bot = BotHandler(token, dialog_manager)
     
     ###############################################################
 
